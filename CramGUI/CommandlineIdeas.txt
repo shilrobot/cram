@@ -1,0 +1,17 @@
+Cram commandline arguments
+cram.exe [no arguments] - run with GUI
+Otherwise:
+cram.exe [options] IMG1 IMG2 IMG3 ...
+  -colorkey {auto,none,#RRGGBB}
+  -size WxH
+  -bg {#[AA]RRGGBB}
+  -border BORDERSIZE
+  -fallbacks NUM  (NUM=0: disable; NUM > 0: this many fallbacks)
+  -fbsize WxH,WxH,WxH...
+  -crop
+  -rotate
+  -unique
+  -o FILE (required) XML file output
+  
+  -? -help
+  -v, version  

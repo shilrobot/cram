@@ -1,0 +1,21 @@
+High Priority
+=============
+* Allow for "base path" (-ipath, ppath)
+
+Lower Priority
+==============
+* More automated sanity checks
+	(check that all rects are accounted for, no duplicate IDs, no overlaps, none outside image, etc.)
+* Delete existing pages (-clean)
+* "Quiet" mode
+* More careful handling of error conditions for core code
+
+Done
+====
+* Settings save/restore
+* Polished API
+* Commandline interface
+* Extra tight packing
+* Fallback sizes for last page (code+GUI)
+* Borders
+* Enhanced sanity checking & assertions to catch problems early on
