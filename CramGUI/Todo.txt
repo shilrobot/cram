@@ -1,6 +1,7 @@
 High Priority
 =============
-* Allow for "base path" (-ipath, ppath)
+* Allow for "base path" (-ipath, -ppath)
+* Run from settings file
 
 Lower Priority
 ==============

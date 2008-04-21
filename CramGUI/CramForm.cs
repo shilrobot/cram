@@ -123,10 +123,12 @@ namespace Cram
                 RemoveAllInputImages();
         }
 
-        private void inputImageList_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+
+        private void inputImageList_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateUI();
         }
+
 
         private void RecalculateInputImageStats()
         {

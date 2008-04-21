@@ -140,7 +140,7 @@ namespace Cram
             this.inputImageList.TabIndex = 2;
             this.inputImageList.UseCompatibleStateImageBehavior = false;
             this.inputImageList.View = System.Windows.Forms.View.Details;
-            this.inputImageList.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.inputImageList_ItemSelectionChanged);
+            this.inputImageList.SelectedIndexChanged += new System.EventHandler(this.inputImageList_SelectedIndexChanged);
             // 
             // columnHeader1
             // 
