@@ -250,6 +250,14 @@ namespace Cram
 
             outputFilenameEdit.Text = settings.XmlFilename;
 
+            shortNameMode.Checked = (settings.PathMode == PathMode.Short);
+            fullPathMode.Checked = (settings.PathMode == PathMode.Full);
+            relativePathMode.Checked = (settings.PathMode == PathMode.Relative);
+
+            relativePathEdit.Text = settings.RelativePathBase;
+
+            cleanCheck.Checked = settings.Clean;
+
             RecalculateInputImageStats();
             UpdateUI();
         }
@@ -301,6 +309,24 @@ namespace Cram
 
             settings.XmlFilename = outputFilenameEdit.Text;
 
+            if (shortNameMode.Checked)
+            {
+                settings.PathMode = PathMode.Short;
+                settings.RelativePathBase = "";
+            }
+            else if (fullPathMode.Checked)
+            {
+                settings.PathMode = PathMode.Full;
+                settings.RelativePathBase = "";
+            }
+            else //if (relativePathMode.Checked)
+            {
+                settings.PathMode = PathMode.Relative;
+                settings.RelativePathBase = relativePathEdit.Text;
+            }
+
+            settings.Clean = cleanCheck.Checked;
+
             return true;
         }
 
@@ -335,9 +361,20 @@ namespace Cram
             }
         }
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void browseRelativeFilenameBtn_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://www.shilbert.com");
+            FolderBrowserDialog dlg = new FolderBrowserDialog();
+            if (relativePathEdit.Text != "")
+            {
+                dlg.SelectedPath = relativePathEdit.Text;
+            }
+            else if (outputFilenameEdit.Text != "")
+            {
+                dlg.SelectedPath = Path.GetDirectoryName(outputFilenameEdit.Text);
+            }
+            dlg.ShowNewFolderButton = true;
+            if (dlg.ShowDialog() == DialogResult.OK)
+                relativePathEdit.Text = dlg.SelectedPath;
         }
 
         private void addFallbackButton_Click(object sender, EventArgs e)

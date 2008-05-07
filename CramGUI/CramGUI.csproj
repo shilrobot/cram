@@ -49,6 +49,7 @@
     <Compile Include="AddFallback.Designer.cs">
       <DependentUpon>AddFallback.cs</DependentUpon>
     </Compile>
+    <Compile Include="PathUtil.cs" />
     <Compile Include="CramForm.cs">
       <SubType>Form</SubType>
     </Compile>

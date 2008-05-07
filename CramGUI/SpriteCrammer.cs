@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Security.Cryptography;
 using System.IO;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace Cram
 {
@@ -27,6 +29,12 @@ namespace Cram
 
     public delegate void ProgressLog(string s);
 
+    public class SpriteCramException : Exception
+    {
+        public SpriteCramException() : base() {}
+        public SpriteCramException(string s) : base(s) {}
+    }
+
     public class SpriteCrammer
     {
         public event ProgressLog LogEvent;
@@ -39,43 +47,77 @@ namespace Cram
         private List<Page> pages;
         private List<String> pageFilenames = new List<String>();
 
+        // Indicates a "fatal" error that should return a non-zero (i.e., failed) result to shell
+        private void FatalError()
+        {
+            throw new SpriteCramException();
+        }
+
         public bool Run()
+        {
+            try
+            {
+                RunInternal();
+                return true;
+            }
+            catch (SpriteCramException)
+            {
+                Log("Generation failed.");
+                return false;
+            }
+            catch (Exception e)
+            {
+               Log("*** An exception occurred! ***");
+               Log(e.Message);
+               return false;
+            }
+        }
+
+        public void RunInternal()
         {
             int startTicks = Environment.TickCount;
 
             if (Settings.SourceImages.Count == 0)
             {
                 Log("No input images, aborting.");
-                return false;
+                FatalError();
             }
 
             if (Settings.AllowFallbacks && Settings.FallbackSizes.Count == 0)
             {
                 Log("No fallback sizes, aborting.");
-                return false;
+                FatalError();
             }
 
             if (Settings.XmlFilename == "" ||
                 Settings.XmlFilename == null)
             {
                 Log("No XML output filename, aborting.");
-                return false;
+                FatalError();
             }
 
             Log("Processing input images...");
 
             foreach (string srcImg in Settings.SourceImages)
             {
-                //Log("Processing: {0}", srcImg.ShortName);
                 ProcessImage(srcImg);
             }
-
-            //Log("Done processing input images.");
-
+            
             if (SourceImages.Count == 0)
             {
                 Log("No input images left after processing, aborting.");
-                return false;
+                FatalError();
+            }
+
+            // Check for duplicate images
+            // TODO: Should this be case insensitive...? Seems like an edge case.
+            Dictionary<string, bool> dupNameCheckDict = new Dictionary<string, bool>();
+            foreach (SourceImage img in SourceImages)
+            {
+                if (dupNameCheckDict.ContainsKey(img.ShortName))
+                    Log("Warning: Duplicate filename: {0}", img.ShortName);
+                else
+                    dupNameCheckDict[img.ShortName] = true;
             }
 
             long before = 0;
@@ -130,13 +172,31 @@ namespace Cram
                         r.W, r.H);
             }
 
+            // Clean pages, if any exist
+            if (Settings.Clean)
+            {
+                Log("Removing old sprite pages...");
+                List<string> matchingPages = FindMatchingPages(Settings.XmlFilename);
+                foreach (string s in matchingPages)
+                {
+                    try
+                    {
+                        File.Delete(s);
+                        Log("Removed {0}", Path.GetFileName(s));
+                    }
+                    catch (Exception)
+                    {
+                        Log("Error: Couldn't remove old page: {0}", s);
+                    }
+                }
+            }
+
             // Save pages
             int pageId = 0;
-            bool pagesFailed = false;
             foreach (Page page in pages)
             {
-                string partialFilename;
-                string filename;
+                string partialFilename = "";
+                string filename = "";
 
                 try
                 {
@@ -149,8 +209,7 @@ namespace Cram
                 catch (Exception)
                 {
                     Log("Error saving page: Invalid XML filename, cannot generate page filename");
-                    pagesFailed = true;
-                    break;
+                    FatalError();
                 }
 
                 pageFilenames.Add(partialFilename);
@@ -159,25 +218,21 @@ namespace Cram
                 ++pageId;
             }
 
-            if (!pagesFailed)
+            pageId = 0;
+            foreach (Page page in pages)
             {
-                pageId = 0;
-                foreach (Page page in pages)
+                foreach (Rect rect in page.FittedRects)
                 {
-                    foreach (Rect rect in page.FittedRects)
-                    {
-                        SourceImage img = (SourceImage)rect.Tag;
-                        img.Rect = rect;
-                        img.PageId = pageId;
-                    }
-
-                    ++pageId;
+                    SourceImage img = (SourceImage)rect.Tag;
+                    img.Rect = rect;
+                    img.PageId = pageId;
                 }
 
-                // Save the XML
-                SaveXML();
+                ++pageId;
             }
 
+            // Save the XML
+            SaveXML();
 
             int endTicks = Environment.TickCount;
 
@@ -229,15 +284,49 @@ namespace Cram
                          n, p.Width, p.Height, p.FittedRects.Count, p.UsagePercent);
                     ++n;
                 }
-
-                return true;
             }
             else
             {
                 Log("No pages generated");
-                return false;
+                FatalError();
             }
 
+        }
+
+
+        private List<string> FindMatchingPages(string xmlPath)
+        {
+            List<string> matches = new List<string>();
+            string dir = Path.GetDirectoryName(xmlPath);
+            if(!Directory.Exists(dir))
+                return matches;
+            string basename = Path.GetFileNameWithoutExtension(xmlPath).ToLower();
+            FileInfo[] fileInfos = new DirectoryInfo(dir).GetFiles();
+            // TODO: Make this work case sensitively on Linux, etc...?
+
+            Regex regex = new System.Text.RegularExpressions.Regex("^[0-9][0-9][0-9][0-9]$");
+
+            foreach (FileInfo fileInfo in fileInfos)
+            {
+                string fileName = fileInfo.Name.ToLower();
+
+                if (!fileName.StartsWith(basename))
+                    continue;
+
+                fileName = fileName.Substring(basename.Length);
+
+                if (!fileName.EndsWith(".png"))
+                    continue;
+
+                fileName = fileName.Substring(0, fileName.Length - ".png".Length);
+                if (fileName.Length != 4)
+                    continue;
+
+                if (regex.Match(fileName).Success)
+                    matches.Add(fileInfo.FullName);            
+            }
+
+            return matches;
         }
 
         private void ProcessImage(string filename)
@@ -247,7 +336,31 @@ namespace Cram
 
             SourceImage srcImg = new SourceImage();
             srcImg.Filename = filename;
-            srcImg.ShortName = Path.GetFileName(filename);
+            
+            // Some of these path conversions can fail, if they do, fallback to the
+            // default path
+            try
+            {
+                switch (Settings.PathMode)
+                {
+                    case PathMode.Short:
+                        srcImg.ShortName = Path.GetFileName(filename);
+                        break;
+                    case PathMode.Full:
+                        srcImg.ShortName = Path.GetFullPath(filename);
+                        break;
+                    case PathMode.Relative:
+                        srcImg.ShortName = PathUtil.RelativePathTo(Path.GetFullPath(Settings.RelativePathBase),
+                                                                        Path.GetFullPath(filename));
+                        break;
+                }
+            }
+            catch (Exception)
+            {
+                Log("Error adjusting path, using original: {0}", filename);
+                srcImg.ShortName = filename;
+            }
+
 
             try
             {
@@ -567,6 +680,7 @@ namespace Cram
             catch (Exception)
             {
                 Log("Error saving file: {0}", Settings.XmlFilename);
+                FatalError();
             }
         }
 
@@ -627,6 +741,7 @@ namespace Cram
             catch (Exception)
             {
                 Log("Error saving file: {0}", filename);
+                FatalError();
             }
             finally
             {
@@ -637,6 +752,7 @@ namespace Cram
         private void DumpImage(SourceImage srcImg)
         {
             return;
+            /*
             Bitmap bmp = new Bitmap(srcImg.CropW, srcImg.CropH, PixelFormat.Format32bppArgb);
             for(int x=0; x<srcImg.CropW; ++x)
                 for (int y = 0; y < srcImg.CropH; ++y)
@@ -647,6 +763,7 @@ namespace Cram
                     bmp.SetPixel(x, y, Color.FromArgb(color));
                 }
             bmp.Save(@"c:\tmp\cram\" + srcImg.ShortName);
+            */
         }
 
         private string ComputeHash(SourceImage srcImg)

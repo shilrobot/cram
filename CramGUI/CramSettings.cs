@@ -7,13 +7,18 @@ using System.Xml.Serialization;
 
 namespace Cram
 {
-    // TODO: Load/Save these settings
-
     public enum ColorKeyMode
     {
         Manual,
         Automatic,
         Disabled
+    }
+
+    public enum PathMode
+    {
+        Short,
+        Full,
+        Relative
     }
 
     public class CramSettings
@@ -64,6 +69,11 @@ namespace Cram
 
         public string XmlFilename = "";
 
+        public PathMode PathMode = PathMode.Short;
+        public string RelativePathBase = "";
+
+        public bool Clean = false;
+        
         public static CramSettings Load(string filename)
         {
             try
@@ -74,7 +84,7 @@ namespace Cram
                 stream.Close();
                 return settings;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -89,7 +99,7 @@ namespace Cram
                 serializer.Serialize(stream, this);
                 stream.Close();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }

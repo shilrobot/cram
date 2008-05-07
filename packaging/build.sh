@@ -6,7 +6,7 @@ VCS=VCSExpress.exe
 
 # Do a subversion export (no .svn directories or intermediate files, 100% clean)
 SRC=src
-rm -rf Cram-* $SRC
+rm -rf Cram-* $SRC md5sum.txt verify 
 svn export http://shilbert.cjb.net/repos/private/trunk/csharp/Cram $SRC
 if [ $? -ne 0 ] ; then
 	echo "*** SVN EXPORT FAILED ***"
@@ -53,10 +53,21 @@ rm -rf $SRC
 pushd $CRAM_DIST_NAME
 zip -9r ../$CRAM_ZIP_NAME .
 popd
+md5sum $CRAM_ZIP_NAME > md5sum.txt
 
 # Clean up
 rm -rf $CRAM_DIST_NAME
 
+
 # Upload the final result to shilbert.com
 echo "*** UPLOADING TO SHILBERT.COM ***"
 ./upload.sh $CRAM_ZIP_NAME
+
+
+mkdir verify
+pushd verify
+wget -O $CRAM_ZIP_NAME "http://www.shilbert.com/files/$CRAM_ZIP_NAME"
+md5sum -c ../md5sum.txt
+popd
+
+rm -rf md5sum.txt verify

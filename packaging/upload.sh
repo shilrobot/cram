@@ -9,6 +9,7 @@ stty echo
 echo "shilbert
 $passw
 CD www/files
+BINARY
 PUT $1
 quit" > "$FTPCMDS"
 ftp -s:"$FTPCMDS" shilbert.com

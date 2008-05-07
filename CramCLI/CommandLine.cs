@@ -29,13 +29,21 @@ namespace Cram
             System.Console.WriteLine("Options:");
             System.Console.WriteLine("  -bg [AA]RRGGBB          Changes background color");
             System.Console.WriteLine("  -border PIXELS          Sets padding between sprite frames");
+            System.Console.WriteLine("  -clean                  Delete all pages with the same base name before");
+            System.Console.WriteLine("                          generating any new ones.");
             System.Console.WriteLine("  -colorkey MODE          Defines how to perform colorkeying.");
             System.Console.WriteLine("                            none: Don't do any extra colorkeying");
             System.Console.WriteLine("                            auto: Detect colorkey from corners of images");
             System.Console.WriteLine("                            [AA]RRGGBB: Colorkey using this color");
+            System.Console.WriteLine("  -config CRAMFILE        Discards earlier arguments and loads settings");
+            System.Console.WriteLine("                          and image list from the specified .cram file.");
             System.Console.WriteLine("  -crop                   Crops whitespace from around sprites");
             System.Console.WriteLine("  -fallbacks COUNT        Sets number of fallbacks to try. 0 = Disable");
             System.Console.WriteLine("  -fbsizes WxH,WxH,...    Sets fallback sizes to try");
+            System.Console.WriteLine("  -ipath MODE[:PATH]      Defines how to save image paths in the XML file.");
+            System.Console.WriteLine("                            short: Just use base filename.");
+            System.Console.WriteLine("                            full: Use full pathname");
+            System.Console.WriteLine("                            rel:PATH: Use pathnames relative to PATH.");
             System.Console.WriteLine("  -o XMLFILE              REQUIRED: Sets the output XML file path");
             System.Console.WriteLine("  -rotate                 Rotates sprites to save space");
             System.Console.WriteLine("  -size WxH               Sets the page size to use");
@@ -177,7 +185,43 @@ namespace Cram
                         Console.WriteLine("Sprite Crammer {0}", VersionInfo.Version);
                         Console.WriteLine("Copyright (C) 2008 Scott Hilbert");
                         Console.WriteLine("http://www.shilbert.com/");
-                        System.Environment.Exit(0);                        
+                        System.Environment.Exit(0);
+                        break;
+
+                    case "-ipath":
+                        {
+                            if (queue.Count == 0 || queue.Peek().StartsWith("-"))
+                                Bail("Missing parameter for -ipath");
+                            string param = queue.Dequeue();
+                            string paramLower = param.ToLower();
+                            if (paramLower == "short")
+                                settings.PathMode = PathMode.Short;
+                            else if (paramLower == "full")
+                                settings.PathMode = PathMode.Full;
+                            else if (paramLower.StartsWith("rel:") && param.Length > 4)
+                            {
+                                settings.PathMode = PathMode.Relative;
+                                settings.RelativePathBase = param.Substring(4);
+                            }
+                            else
+                                Bail("Invalid parameter for -ipath: {0}", param);
+                        }
+                        break;
+
+                    case "-config":
+                        {
+                            if (queue.Count == 0 || queue.Peek().StartsWith("-"))
+                                Bail("Missing parameter for -config");
+                            string param = queue.Dequeue();
+                            settings = CramSettings.Load(param);
+                            outputSpecified = true;
+                            if (settings == null)
+                                Bail("Cannot load config file: {0}", param);
+                        }
+                        break;
+
+                    case "-clean":
+                        settings.Clean = true;
                         break;
 
                     default:
@@ -193,11 +237,6 @@ namespace Cram
             }
 
             settings.FallbackSizes.Sort(Util.CompareFallbackSizes);
-
-            if (settings.SourceImages.Count == 0)
-            {
-                BailWithUsage("No source images specified.");
-            }
 
             if (!outputSpecified)
             {

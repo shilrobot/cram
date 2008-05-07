@@ -1,18 +1,20 @@
 High Priority
 =============
-* Allow for "base path" (-ipath, -ppath)
-* Run from settings file
 
 Lower Priority
 ==============
 * More automated sanity checks
 	(check that all rects are accounted for, no duplicate IDs, no overlaps, none outside image, etc.)
-* Delete existing pages (-clean)
-* "Quiet" mode
-* More careful handling of error conditions for core code
+* "Quiet" mode(?)
 
 Done
 ====
+* Warn if two images end up with the same "final name"
+* Nailed down error result, so we should always give an error code on shell
+  if something "incredibly bad" happens (e.g. output files not being written)
+* Delete existing pages (-clean)
+* Use settings file on commandline
+* Allow for "base path" (-ipath)
 * Settings save/restore
 * Polished API
 * Commandline interface
@@ -20,3 +22,4 @@ Done
 * Fallback sizes for last page (code+GUI)
 * Borders
 * Enhanced sanity checking & assertions to catch problems early on
+

@@ -69,7 +69,7 @@ namespace Cram
             this.outputBrowseButton = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.cleanCheck = new System.Windows.Forms.CheckBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.outputTextBox = new System.Windows.Forms.TextBox();
             this.generateButton = new System.Windows.Forms.Button();
@@ -81,6 +81,12 @@ namespace Cram
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutSpriteCrammerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.shortNameMode = new System.Windows.Forms.RadioButton();
+            this.fullPathMode = new System.Windows.Forms.RadioButton();
+            this.relativePathMode = new System.Windows.Forms.RadioButton();
+            this.browseRelativeFilenameBtn = new System.Windows.Forms.Button();
+            this.relativePathEdit = new System.Windows.Forms.TextBox();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.colorKeyChooser)).BeginInit();
@@ -92,6 +98,7 @@ namespace Cram
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -103,7 +110,7 @@ namespace Cram
             this.groupBox1.Controls.Add(this.addInputImageButton);
             this.groupBox1.Location = new System.Drawing.Point(12, 31);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(301, 235);
+            this.groupBox1.Size = new System.Drawing.Size(301, 447);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Input Images";
@@ -113,7 +120,7 @@ namespace Cram
             this.removeAllInputImagesButton.Location = new System.Drawing.Point(168, 20);
             this.removeAllInputImagesButton.Name = "removeAllInputImagesButton";
             this.removeAllInputImagesButton.Size = new System.Drawing.Size(75, 23);
-            this.removeAllInputImagesButton.TabIndex = 4;
+            this.removeAllInputImagesButton.TabIndex = 2;
             this.removeAllInputImagesButton.Text = "Remove All";
             this.removeAllInputImagesButton.UseVisualStyleBackColor = true;
             this.removeAllInputImagesButton.Click += new System.EventHandler(this.removeAllInputImagesButton_Click);
@@ -121,7 +128,7 @@ namespace Cram
             // inputImagesStatsLabel
             // 
             this.inputImagesStatsLabel.AutoSize = true;
-            this.inputImagesStatsLabel.Location = new System.Drawing.Point(6, 215);
+            this.inputImagesStatsLabel.Location = new System.Drawing.Point(3, 424);
             this.inputImagesStatsLabel.Name = "inputImagesStatsLabel";
             this.inputImagesStatsLabel.Size = new System.Drawing.Size(105, 13);
             this.inputImagesStatsLabel.TabIndex = 3;
@@ -136,8 +143,8 @@ namespace Cram
             this.inputImageList.FullRowSelect = true;
             this.inputImageList.Location = new System.Drawing.Point(6, 49);
             this.inputImageList.Name = "inputImageList";
-            this.inputImageList.Size = new System.Drawing.Size(289, 163);
-            this.inputImageList.TabIndex = 2;
+            this.inputImageList.Size = new System.Drawing.Size(289, 372);
+            this.inputImageList.TabIndex = 3;
             this.inputImageList.UseCompatibleStateImageBehavior = false;
             this.inputImageList.View = System.Windows.Forms.View.Details;
             this.inputImageList.SelectedIndexChanged += new System.EventHandler(this.inputImageList_SelectedIndexChanged);
@@ -184,10 +191,10 @@ namespace Cram
             this.groupBox2.Controls.Add(this.disableCKMode);
             this.groupBox2.Controls.Add(this.specificCKMode);
             this.groupBox2.Controls.Add(this.automaticCKMode);
-            this.groupBox2.Location = new System.Drawing.Point(12, 272);
+            this.groupBox2.Location = new System.Drawing.Point(320, 31);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(301, 89);
-            this.groupBox2.TabIndex = 1;
+            this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Color Key";
             // 
@@ -256,10 +263,10 @@ namespace Cram
             this.groupBox3.Controls.Add(this.spritePageSizeCombo);
             this.groupBox3.Controls.Add(this.rotateCheck);
             this.groupBox3.Controls.Add(this.cropCheck);
-            this.groupBox3.Location = new System.Drawing.Point(12, 367);
+            this.groupBox3.Location = new System.Drawing.Point(320, 126);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(301, 342);
-            this.groupBox3.TabIndex = 2;
+            this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Options";
             // 
@@ -288,7 +295,7 @@ namespace Cram
             this.borderSizeUpDown.Location = new System.Drawing.Point(74, 86);
             this.borderSizeUpDown.Name = "borderSizeUpDown";
             this.borderSizeUpDown.Size = new System.Drawing.Size(46, 20);
-            this.borderSizeUpDown.TabIndex = 6;
+            this.borderSizeUpDown.TabIndex = 2;
             // 
             // label7
             // 
@@ -307,7 +314,7 @@ namespace Cram
             this.uniqueCheck.Location = new System.Drawing.Point(9, 318);
             this.uniqueCheck.Name = "uniqueCheck";
             this.uniqueCheck.Size = new System.Drawing.Size(150, 17);
-            this.uniqueCheck.TabIndex = 14;
+            this.uniqueCheck.TabIndex = 10;
             this.uniqueCheck.Text = "Eliminate duplicate images";
             this.uniqueCheck.UseVisualStyleBackColor = true;
             // 
@@ -321,7 +328,7 @@ namespace Cram
             0});
             this.alphaUpDown.Name = "alphaUpDown";
             this.alphaUpDown.Size = new System.Drawing.Size(46, 20);
-            this.alphaUpDown.TabIndex = 5;
+            this.alphaUpDown.TabIndex = 1;
             // 
             // label6
             // 
@@ -356,7 +363,7 @@ namespace Cram
             0});
             this.fallbackPagesUpDown.Name = "fallbackPagesUpDown";
             this.fallbackPagesUpDown.Size = new System.Drawing.Size(46, 20);
-            this.fallbackPagesUpDown.TabIndex = 11;
+            this.fallbackPagesUpDown.TabIndex = 7;
             this.fallbackPagesUpDown.Value = new decimal(new int[] {
             2,
             0,
@@ -386,7 +393,7 @@ namespace Cram
             this.removeFallbackButton.Location = new System.Drawing.Point(201, 193);
             this.removeFallbackButton.Name = "removeFallbackButton";
             this.removeFallbackButton.Size = new System.Drawing.Size(75, 23);
-            this.removeFallbackButton.TabIndex = 10;
+            this.removeFallbackButton.TabIndex = 5;
             this.removeFallbackButton.Text = "Remove";
             this.removeFallbackButton.UseVisualStyleBackColor = true;
             this.removeFallbackButton.Click += new System.EventHandler(this.removeFallbackButton_Click);
@@ -396,7 +403,7 @@ namespace Cram
             this.addFallbackButton.Location = new System.Drawing.Point(201, 164);
             this.addFallbackButton.Name = "addFallbackButton";
             this.addFallbackButton.Size = new System.Drawing.Size(75, 23);
-            this.addFallbackButton.TabIndex = 9;
+            this.addFallbackButton.TabIndex = 4;
             this.addFallbackButton.Text = "Add...";
             this.addFallbackButton.UseVisualStyleBackColor = true;
             this.addFallbackButton.Click += new System.EventHandler(this.addFallbackButton_Click);
@@ -407,7 +414,7 @@ namespace Cram
             this.fallbackSizeListBox.Location = new System.Drawing.Point(20, 164);
             this.fallbackSizeListBox.Name = "fallbackSizeListBox";
             this.fallbackSizeListBox.Size = new System.Drawing.Size(175, 121);
-            this.fallbackSizeListBox.TabIndex = 8;
+            this.fallbackSizeListBox.TabIndex = 3;
             // 
             // enableFallbackCheck
             // 
@@ -441,7 +448,7 @@ namespace Cram
             this.spritePageSizeCombo.Location = new System.Drawing.Point(97, 25);
             this.spritePageSizeCombo.Name = "spritePageSizeCombo";
             this.spritePageSizeCombo.Size = new System.Drawing.Size(85, 21);
-            this.spritePageSizeCombo.TabIndex = 1;
+            this.spritePageSizeCombo.TabIndex = 0;
             this.spritePageSizeCombo.Text = "512x512";
             // 
             // rotateCheck
@@ -452,7 +459,7 @@ namespace Cram
             this.rotateCheck.Location = new System.Drawing.Point(168, 295);
             this.rotateCheck.Name = "rotateCheck";
             this.rotateCheck.Size = new System.Drawing.Size(89, 17);
-            this.rotateCheck.TabIndex = 13;
+            this.rotateCheck.TabIndex = 9;
             this.rotateCheck.Text = "Allow rotation";
             this.rotateCheck.UseVisualStyleBackColor = true;
             // 
@@ -464,7 +471,7 @@ namespace Cram
             this.cropCheck.Location = new System.Drawing.Point(9, 295);
             this.cropCheck.Name = "cropCheck";
             this.cropCheck.Size = new System.Drawing.Size(151, 17);
-            this.cropCheck.TabIndex = 12;
+            this.cropCheck.TabIndex = 8;
             this.cropCheck.Text = "Crop out transparent areas";
             this.cropCheck.UseVisualStyleBackColor = true;
             // 
@@ -511,37 +518,36 @@ namespace Cram
             // 
             // groupBox4
             // 
-            this.groupBox4.Controls.Add(this.checkBox1);
+            this.groupBox4.Controls.Add(this.cleanCheck);
             this.groupBox4.Controls.Add(this.label9);
             this.groupBox4.Controls.Add(this.outputBrowseButton);
             this.groupBox4.Controls.Add(this.outputFilenameEdit);
             this.groupBox4.Controls.Add(this.label8);
-            this.groupBox4.Location = new System.Drawing.Point(319, 31);
+            this.groupBox4.Location = new System.Drawing.Point(12, 484);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(301, 105);
-            this.groupBox4.TabIndex = 5;
+            this.groupBox4.Size = new System.Drawing.Size(302, 105);
+            this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Output Files";
             // 
-            // checkBox1
+            // cleanCheck
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Enabled = false;
-            this.checkBox1.Location = new System.Drawing.Point(9, 81);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(171, 17);
-            this.checkBox1.TabIndex = 7;
-            this.checkBox1.Text = "Delete existing sprite page files";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.cleanCheck.AutoSize = true;
+            this.cleanCheck.Location = new System.Drawing.Point(9, 81);
+            this.cleanCheck.Name = "cleanCheck";
+            this.cleanCheck.Size = new System.Drawing.Size(171, 17);
+            this.cleanCheck.TabIndex = 7;
+            this.cleanCheck.Text = "Delete existing sprite page files";
+            this.cleanCheck.UseVisualStyleBackColor = true;
             // 
             // groupBox5
             // 
             this.groupBox5.Controls.Add(this.outputTextBox);
             this.groupBox5.Controls.Add(this.generateButton);
-            this.groupBox5.Location = new System.Drawing.Point(319, 142);
+            this.groupBox5.Location = new System.Drawing.Point(627, 31);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(300, 567);
-            this.groupBox5.TabIndex = 6;
+            this.groupBox5.Size = new System.Drawing.Size(300, 558);
+            this.groupBox5.TabIndex = 4;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Run";
             // 
@@ -553,7 +559,7 @@ namespace Cram
             this.outputTextBox.Name = "outputTextBox";
             this.outputTextBox.ReadOnly = true;
             this.outputTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.outputTextBox.Size = new System.Drawing.Size(285, 501);
+            this.outputTextBox.Size = new System.Drawing.Size(285, 491);
             this.outputTextBox.TabIndex = 2;
             // 
             // generateButton
@@ -573,7 +579,7 @@ namespace Cram
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(632, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(939, 24);
             this.menuStrip1.TabIndex = 8;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -629,11 +635,75 @@ namespace Cram
             this.aboutSpriteCrammerToolStripMenuItem.Text = "&About Sprite Crammer...";
             this.aboutSpriteCrammerToolStripMenuItem.Click += new System.EventHandler(this.aboutSpriteCrammerToolStripMenuItem_Click);
             // 
+            // shortNameMode
+            // 
+            this.shortNameMode.AutoSize = true;
+            this.shortNameMode.Checked = true;
+            this.shortNameMode.Location = new System.Drawing.Point(6, 19);
+            this.shortNameMode.Name = "shortNameMode";
+            this.shortNameMode.Size = new System.Drawing.Size(246, 17);
+            this.shortNameMode.TabIndex = 8;
+            this.shortNameMode.TabStop = true;
+            this.shortNameMode.Text = "Use only image filenames in XML file (no paths)";
+            this.shortNameMode.UseVisualStyleBackColor = true;
+            // 
+            // fullPathMode
+            // 
+            this.fullPathMode.AutoSize = true;
+            this.fullPathMode.Location = new System.Drawing.Point(6, 42);
+            this.fullPathMode.Name = "fullPathMode";
+            this.fullPathMode.Size = new System.Drawing.Size(89, 17);
+            this.fullPathMode.TabIndex = 9;
+            this.fullPathMode.Text = "Use full paths";
+            this.fullPathMode.UseVisualStyleBackColor = true;
+            // 
+            // relativePathMode
+            // 
+            this.relativePathMode.AutoSize = true;
+            this.relativePathMode.Location = new System.Drawing.Point(6, 65);
+            this.relativePathMode.Name = "relativePathMode";
+            this.relativePathMode.Size = new System.Drawing.Size(168, 17);
+            this.relativePathMode.TabIndex = 10;
+            this.relativePathMode.Text = "Use paths relative to directory:";
+            this.relativePathMode.UseVisualStyleBackColor = true;
+            // 
+            // browseRelativeFilenameBtn
+            // 
+            this.browseRelativeFilenameBtn.Location = new System.Drawing.Point(217, 86);
+            this.browseRelativeFilenameBtn.Name = "browseRelativeFilenameBtn";
+            this.browseRelativeFilenameBtn.Size = new System.Drawing.Size(75, 23);
+            this.browseRelativeFilenameBtn.TabIndex = 12;
+            this.browseRelativeFilenameBtn.Text = "Browse...";
+            this.browseRelativeFilenameBtn.UseVisualStyleBackColor = true;
+            this.browseRelativeFilenameBtn.Click += new System.EventHandler(this.browseRelativeFilenameBtn_Click);
+            // 
+            // relativePathEdit
+            // 
+            this.relativePathEdit.Location = new System.Drawing.Point(20, 88);
+            this.relativePathEdit.Name = "relativePathEdit";
+            this.relativePathEdit.Size = new System.Drawing.Size(191, 20);
+            this.relativePathEdit.TabIndex = 11;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.browseRelativeFilenameBtn);
+            this.groupBox6.Controls.Add(this.shortNameMode);
+            this.groupBox6.Controls.Add(this.relativePathEdit);
+            this.groupBox6.Controls.Add(this.fullPathMode);
+            this.groupBox6.Controls.Add(this.relativePathMode);
+            this.groupBox6.Location = new System.Drawing.Point(320, 474);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(301, 115);
+            this.groupBox6.TabIndex = 9;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Image Path Mode";
+            // 
             // CramForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(632, 719);
+            this.ClientSize = new System.Drawing.Size(939, 600);
+            this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -662,6 +732,8 @@ namespace Cram
             this.groupBox5.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -712,7 +784,7 @@ namespace Cram
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.TextBox outputTextBox;
         private System.Windows.Forms.Button generateButton;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox cleanCheck;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
@@ -721,6 +793,12 @@ namespace Cram
         private System.Windows.Forms.ToolStripMenuItem saveSettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem aboutSpriteCrammerToolStripMenuItem;
+        private System.Windows.Forms.RadioButton relativePathMode;
+        private System.Windows.Forms.RadioButton fullPathMode;
+        private System.Windows.Forms.RadioButton shortNameMode;
+        private System.Windows.Forms.Button browseRelativeFilenameBtn;
+        private System.Windows.Forms.TextBox relativePathEdit;
+        private System.Windows.Forms.GroupBox groupBox6;
     }
 }
 
