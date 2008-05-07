@@ -6,6 +6,6 @@ namespace Cram
 {
     public class VersionInfo
     {
-        public const string Version = "1.2";
+        public const string Version = "1.0b";
     }
 }
