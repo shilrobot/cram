@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Drawing.Drawing2D;
 
 namespace Cram
 {
@@ -36,6 +37,44 @@ namespace Cram
 
         private bool ThumbnailAbort() { return false; }
 
+        private SizeF GetThumbnailSize(Size input)
+        {
+            if (input.Width == 0 || input.Height == 0)
+                return new Size(0, 0);
+            if (input.Width >= input.Height)
+            {
+                SizeF result = new Size();
+                result.Width = 16;
+                result.Height = 16.0f * (float)input.Height / (float)input.Width;
+                return result;
+            }
+            else
+            {
+                SizeF result = new Size();
+                result.Width = 16.0f * (float)input.Width / (float)input.Height;
+                result.Height = 16;
+                return result;
+            }
+        }
+
+        // Creates a thumbnail with the right colored background (not a weird blue border)
+        // and with the proper aspect ratio
+        private Image MakeBetterThumbnail(Image source)
+        {
+            SizeF thumbSize = GetThumbnailSize(new Size(source.Width, source.Height));
+            PointF destOffset = new PointF((16 - thumbSize.Width) / 2.0f,
+                                        (16 - thumbSize.Height) / 2.0f);
+            RectangleF destRect = new RectangleF(destOffset.X, destOffset.Y, thumbSize.Width, thumbSize.Height);
+
+            Bitmap bmp = new Bitmap(16, 16);
+            Graphics g = Graphics.FromImage(bmp);
+            g.InterpolationMode = InterpolationMode.HighQualityBilinear;
+            g.Clear(SystemColors.Window);
+            g.DrawImage(source,
+                        destRect);
+            return bmp;
+        }
+
         private bool AddInputImage(string filename)
         {
             Image img;
@@ -57,7 +96,8 @@ namespace Cram
             if (w <= 0 || h <= 0)
                 return false;
 
-            Image img2 = img.GetThumbnailImage(16, 16, ThumbnailAbort, IntPtr.Zero);
+            //Image img2 = img.GetThumbnailImage(16, 16, ThumbnailAbort, IntPtr.Zero);
+            Image img2 = MakeBetterThumbnail(img);
             imageList.Images.Add(img2);
 
             InputImageTag tag = new InputImageTag();
