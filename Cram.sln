@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual C# Express 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CramGUI", "CramGUI\CramGUI.csproj", "{6625C8BB-1335-4EFA-B77C-1B9ADACB0F23}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CramCLI", "CramCLI\CramCLI.csproj", "{2A89A3B2-71F4-45BB-9208-B7A2D65F5E76}"
